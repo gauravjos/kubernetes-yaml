@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: php-app-deployment
+  namespace: apps-ns
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: php-app
+    spec:
+      containers:
+      - name: php-app
+        image: gauravsj/demo-php-app:black
+        ports:
+        - containerPort: 80
