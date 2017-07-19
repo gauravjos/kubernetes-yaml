@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: phpapp-rs-mz
+  # these labels can be applied automatically
+  # from the labels in the pod template if not set
+  # labels:
+    # app: guestbook
+    # tier: frontend
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 2
+  # selector can be applied automatically
+  # from the labels in the pod template if not set,
+  # but we are specifying the selector here to
+  # demonstrate its usage.
+  selector:
+    matchLabels:
+      app: php-app
+    matchExpressions:
+      - {key: tier, operator: In, values: [frontend]}
+  template:
+    metadata:
+      labels:
+        app: php-app
+        tier: frontend
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key:  app
+                  operator: In
+                  values:
+                  - php-app
+              topologyKey:  failure-domain.beta.kubernetes.io/zone
+
+      containers:
+      - name: php
+        image: gauravsj/demo-php-app:green
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 80

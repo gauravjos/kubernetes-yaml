@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-pod-affinity
+  labels:
+    app: pause
+spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: zone
+              operator: In
+              values:
+              - us-central1-b
+          topologyKey: kubernetes.io/hostname
+  containers:
+  - name: with-pod-affinity
+    image: gcr.io/google_containers/pause:2.0

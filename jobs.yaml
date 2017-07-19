@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dockerjob
+spec:
+  template:
+    metadata:
+      name: docker-clean
+    spec:
+      containers:
+      - name: docker-clean
+        image: docker
+        command: ["docker",  "images","&&","sleep","30"]
+        volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run
+      volumes:
+           - name: docker-sock
+             hostPath:
+                  path: /var/run
+      restartPolicy: Never
